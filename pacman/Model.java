@@ -28,24 +28,19 @@ public class Model extends JPanel implements ActionListener {
     private int[] ghost_x, ghost_y, ghost_dx, ghost_dy, ghostSpeed;
 
     private Image heart, ghost_red;
-    private Image up, down, left, right;
+    private Image up, down, left, right, menu, decor;
 
     private int pacman_x, pacman_y, pacmand_x, pacmand_y;
     private int req_dx, req_dy;
 
-    private enum STATE{
-        MENU,
-        GAME
-    };
-    private STATE State = STATE.MENU;
-    
+    //map
     private final short levelData[] = {
     	19, 26, 26, 18, 26, 26, 22, 15, 19, 26, 26, 18, 26, 26, 22,
         21,  3,  6, 21,  3,  6, 17, 18, 20,  3,  6, 21,  3,  6, 21,
         21,  9, 12, 21,  9, 12, 17, 16, 20,  9, 12, 21,  9, 12, 21,
         25, 18, 18, 16, 26, 18, 16, 24, 16, 18, 26, 16, 18, 26, 20,
          7, 17, 16, 20,  2, 17, 28,  7, 25, 20,  7, 17, 20,  7, 21,
-        5,  17, 16, 28,  5, 21, 11,  0,  14, 21,  5, 25, 20,  5, 21,
+         5, 17, 16, 28,  5, 21, 11,  0,  14, 21,  5, 25, 20,  5, 21,
         13, 17, 20, 11, 12, 17, 22, 13, 19, 20,  9, 14, 21, 13, 21,
         19, 16, 16, 26, 26, 16, 24, 26, 24, 16, 26, 26, 16, 18, 20,
         25, 16, 20, 11,  6, 21, 19, 18, 22, 21,  3, 14, 17, 24, 28,
@@ -60,7 +55,7 @@ public class Model extends JPanel implements ActionListener {
     private final int validSpeeds[] = {1, 2, 3, 4, 6, 8};
     private final int maxSpeed = 8;
 
-    private int currentSpeed = 4;
+    private int currentSpeed = 2;
     private short[] screenData;
     private Timer timer;
 
@@ -78,12 +73,12 @@ public class Model extends JPanel implements ActionListener {
     	up = new ImageIcon("./images/up.gif").getImage();
     	left = new ImageIcon("./images/left.gif").getImage();
     	right = new ImageIcon("./images/right.gif").getImage();
-        // ghost = new ImageIcon("./images/ghost.gif").getImage();
+        menu = new ImageIcon("./images/menu.gif").getImage();
         ghost_red = new ImageIcon("./images/ghost_red.gif").getImage();
-        // tempo = new ImageIcon("./images/tempo.gif").getImage();
         heart = new ImageIcon("./images/heart.png").getImage();
+        decor = new ImageIcon("./images/decor.gif").getImage();
     }
-       private void initVariables() {
+    private void initVariables() {
 
         screenData = new short[N_BLOCKS * N_BLOCKS];
         d = new Dimension(400, 400);
@@ -95,7 +90,7 @@ public class Model extends JPanel implements ActionListener {
         dx = new int[4];
         dy = new int[4];
         
-        timer = new Timer(40, this);
+        timer = new Timer(20, this);
         timer.start();
     }
 
@@ -113,10 +108,20 @@ public class Model extends JPanel implements ActionListener {
             checkMaze();
         }
     }
+    
+    
     private void showIntroScreen(Graphics2D g2d) {
+        Font fnt1 = new Font("arial",Font.BOLD, 15);
+        Font fnt0 = new Font("GARAMOND",Font.BOLD, 40);
+        g2d.setFont(fnt0);
+        g2d.setColor(Color.WHITE);
+        g2d.drawString("PACMAN GAME", (SCREEN_SIZE)/9, 100);
+        g2d.drawImage(menu,(SCREEN_SIZE)/6, 200, this);
     	String start = "Press SPACE to start";
+        g2d.setFont(fnt1);
         g2d.setColor(Color.yellow);
         g2d.drawString(start, (SCREEN_SIZE)/4, 150);
+        g2d.drawImage(decor,8, (SCREEN_SIZE)/3, this);
     }
 
     private void drawScore(Graphics2D g) {
@@ -239,7 +244,7 @@ public class Model extends JPanel implements ActionListener {
                     && inGame) {
 
                 dying = true;
-                // score = score -10;
+                 score = score -10; //if pacman dies, the score will decrecres 10 points 
             }
         }
     }
@@ -257,6 +262,7 @@ public class Model extends JPanel implements ActionListener {
             pos = pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (pacman_y / BLOCK_SIZE);
             ch = screenData[pos];
 
+            //increase score
             if ((ch & 16) != 0) { //score
                 screenData[pos] = (short) (ch & 15);
                 score++;
@@ -335,7 +341,6 @@ public class Model extends JPanel implements ActionListener {
                     g2d.setColor(new Color(255,255,255));
                     g2d.fillOval(x + 10, y + 10, 6, 6);
                }
-
                 i++;
             }
         }
@@ -347,7 +352,7 @@ public class Model extends JPanel implements ActionListener {
         score = 0;
         initLevel();
         N_GHOSTS = 6;
-        currentSpeed = 3;
+        currentSpeed = 1;
     }
 
     private void initLevel() {
@@ -393,7 +398,7 @@ public class Model extends JPanel implements ActionListener {
  
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
+        //create screen
         Graphics2D g2d = (Graphics2D) g;
 
         g2d.setColor(Color.black);
@@ -405,6 +410,9 @@ public class Model extends JPanel implements ActionListener {
         if (inGame) {
             playGame(g2d);
         }else {
+            g2d.setColor(Color.black);
+            g2d.fillRect(0, 0, d.width, d.height);
+            drawMaze(g2d);
             showIntroScreen(g2d);
         }
 
