@@ -312,7 +312,7 @@ public class Model extends JPanel implements ActionListener {
         for (y = 0; y < SCREEN_SIZE; y += BLOCK_SIZE) {
             for (x = 0; x < SCREEN_SIZE; x += BLOCK_SIZE) {
 
-                g2d.setColor(new Color(19,53,191));
+                g2d.setColor(new Color(238,20,238));
                 g2d.setStroke(new BasicStroke(5));
                 
                 if ((levelData[i] == 0)) { 
@@ -401,7 +401,7 @@ public class Model extends JPanel implements ActionListener {
         //create screen
         Graphics2D g2d = (Graphics2D) g;
 
-        g2d.setColor(Color.black);
+        g2d.setColor(Color.DARK_GRAY);
         g2d.fillRect(0, 0, d.width, d.height);
 
         drawMaze(g2d);
@@ -410,7 +410,7 @@ public class Model extends JPanel implements ActionListener {
         if (inGame) {
             playGame(g2d);
         }else {
-            g2d.setColor(Color.black);
+            g2d.setColor(Color.DARK_GRAY);
             g2d.fillRect(0, 0, d.width, d.height);
             drawMaze(g2d);
             showIntroScreen(g2d);
